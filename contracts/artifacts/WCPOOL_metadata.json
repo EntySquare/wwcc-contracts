@@ -1,0 +1,234 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "holder",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Approval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Transfer",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "poolKey",
+						"type": "bytes32"
+					}
+				],
+				"name": "getPair",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "home",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "visit",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "rounds",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "wPool",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "dPool",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lPool",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sPool",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "joiner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weight",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "poolKey",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "homeScore",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "visitScore",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kind",
+						"type": "uint256"
+					}
+				],
+				"name": "picking",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "home",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "visit",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "rounds",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "decided",
+						"type": "bool"
+					}
+				],
+				"name": "set_Pool",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"wwcc-contracts/contracts/wwccPool.sol": "WCPOOL"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"wwcc-contracts/contracts/wwccPool.sol": {
+			"keccak256": "0x301238a82bf3d6b72807e67a3158cd6601c5d063028b647b6ad9c344d64baa21",
+			"license": "SimPL-2.0",
+			"urls": [
+				"bzz-raw://9f6e73855cf9cf289b21b0bdb778917e4d96cb832099b6c623764c15bfe1142d",
+				"dweb:/ipfs/QmS5q1U5xbzcg6oVDoLqpotRVBShxawaenZEf3EJFbR1ym"
+			]
+		}
+	},
+	"version": 1
+}
