@@ -72,6 +72,118 @@
 						"internalType": "bytes32",
 						"name": "poolKey",
 						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "homeScore",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "visitScore",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "result",
+						"type": "uint256"
+					}
+				],
+				"name": "Award",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "joiner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weight",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "poolKey",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "homeScore",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "visitScore",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kind",
+						"type": "uint256"
+					}
+				],
+				"name": "Picking",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "home",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "visit",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "rounds",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "decided",
+						"type": "bool"
+					}
+				],
+				"name": "Set_Pool",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "poolKey",
+						"type": "bytes32"
 					}
 				],
 				"name": "getPair",
@@ -114,84 +226,6 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "joiner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "weight",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "poolKey",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "homeScore",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "visitScore",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "kind",
-						"type": "uint256"
-					}
-				],
-				"name": "picking",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "string",
-						"name": "home",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "visit",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "rounds",
-						"type": "string"
-					},
-					{
-						"internalType": "bool",
-						"name": "decided",
-						"type": "bool"
-					}
-				],
-				"name": "set_Pool",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -221,12 +255,19 @@
 		"remappings": []
 	},
 	"sources": {
+		"wwcc-contracts/contracts/safemath.sol": {
+			"keccak256": "0x36355dbf216759005d5686fd41252e8245774b2d58a17a0f2e6330773b889410",
+			"urls": [
+				"bzz-raw://be1c461ea7f23d486b8d18f3ad3888727aaa8c09efc75c200a26a3d6145b7f28",
+				"dweb:/ipfs/QmRKzqNA3LH6NJ1TdhjjocQkE5cHfQaEKZLHvUE2omX88V"
+			]
+		},
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0x345e8f2ed9f58f4e2788bc64b4d1347150ba720068ec73d0b27565039ce688af",
+			"keccak256": "0xf20b2cda13f981402f35c0f664189b0e4bf1535ea5a2c747db9f465b3b4637f9",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://896f31920ceabbedee014b9f08251bfd58c6525183e3ed421b22fee161a20e98",
-				"dweb:/ipfs/QmU74KCnLBZ4BDtgXSq7Dp9Bx3Z47VaeqyK6uNz5b92Gfs"
+				"bzz-raw://575d57647afebf804f047bc72139c45220c10218d3c524486e997845fcf52424",
+				"dweb:/ipfs/Qmd3MHo9Asn5dqVB66gvaZo5ik51WdhB9tRTxB21o3thsb"
 			]
 		}
 	},
