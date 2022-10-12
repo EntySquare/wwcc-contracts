@@ -14,19 +14,32 @@ contract WCPOOL {
         bool decided;
         bool used;
     }
-    struct PickingKey{
-        address joiner;
-        uint256 poolKind; 
-        ScoreInfo scoreInfo;
+    struct AllScorePool{
+        JoinerPicking[] separateBet;
+        bytes32  poolKey;
     }
-    struct ScoreInfo{
+    struct JoinerAllPicking{
+        JoinerPicking[] separateBet;
+        address  joiner;
+    }
+    struct JoinerPicking{
+        uint256 weight;
+        uint256 kind;
         uint256 homeScore;
         uint256 visitScore;
+        address  joiner;
+        string  pickingKey;
+        bool finished;
     }
     address owner;
     mapping (string => uint256) scorePools;
-    mapping (string => uint256) joinerInfo;
+    //mapping (bytes32 => JoinerPicking) allJoinerInfo;
+    mapping (bytes32 => AllScorePool) allScorePoolInfo;
+    mapping (string => uint256) singleScorePool;
+    mapping (address => JoinerAllPicking) joinerAllPicking;
     mapping (bytes32 => WcPool) WcPools;
+    // uint256 nextWDLPoolAmount;
+    // uint256 nextScorePoolAmount;
     event Transfer(address owner,address spender,uint256 value);
     event Approval(address owner,address spender,uint256 value);
      /* Initializes contract with initial supply tokens to the creator of the contract */
@@ -34,13 +47,15 @@ contract WCPOOL {
         address holder)  public{
         // Set the symbol for display purposes
         owner = holder;
+        // nextWDLPoolAmount = 0;
+        // nextScorePoolAmount = 0;
     }
-    function set_Pool(
+    function Set_Pool(
     string memory home,
     string memory visit,
     string memory rounds,
     bool decided
-    ) external  returns (bytes32) {
+    ) external onlyManager returns (bytes32) {
        string memory s1 = strConcat(home,visit);
        string memory s2 = strConcat(s1,rounds);
        bytes32 poolKey = keccak256(abi.encodePacked(s2));
@@ -60,16 +75,21 @@ contract WCPOOL {
        }
        return poolKey;
     }
-    function picking(address joiner,uint256 weight,bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 kind) external returns(bool){
+    function Picking(address joiner,uint256 weight,bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 kind) external onlyManager returns(bool){
         if(!contains(poolKey)) { 
             revert("pool not exist");
        }else{
            WcPool memory pool = WcPools[poolKey];
            string  memory si = strConcat(uint256ToString(homeScore),uint256ToString(visitScore));
-           string  memory jk = strConcat(addressToString(joiner),uint256ToString(kind));
-           string  memory pk = strConcat(jk,si);
+           string  memory pickingKey = strConcat(poolKey,si);
+           JoinerPicking memory jp = JoinerPicking(weight,kind,homeScore,visitScore,joiner,pickingKey,false);
+           allScorePoolInfo[poolKey].poolKey = poolKey;
+           allScorePoolInfo[poolKey].separateBet.push(jp); 
+           joinerAllPicking[joiner].joiner = joiner;
+           allScorePoolInfo[joiner].separateBet.push(jp); 
             if (kind == 2){
               pool.sPool += weight;
+              singleScorePool[pickingKey] += weight;
             }
             else if(kind == 3){
                 pool.wPool += weight;
@@ -78,9 +98,63 @@ contract WCPOOL {
             }else {
                 pool.lPool += weight;
             }
-           joinerInfo[pk] += weight;
            
        }
+       return true
+    }
+    function Award(bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 result)  external onlyManager  payable returns(bool){
+        if(!contains(poolKey)) { 
+            revert("pool not exist");
+       }else{
+           WcPool memory pool = WcPools[poolKey];
+           JoinerPicking[] memory separateBets = allScorePoolInfo[poolKey].separateBet;
+           uint256 allRewardAmount = 0;
+        //    nextWDLPoolAmount += (pool.wPool+pool.lPool+pool.dPool) * 0.05;
+        //    nextScorePoolAmount += pool.sPool * 0.05;
+           uint256 serviceAmount = (pool.sPool+pool.wPool+pool.lPool+pool.dPool) * 0.15;
+                for (
+                uint j = 0;
+                j <= separateBets.length-1;
+                j ++
+                ){
+                  if(separateBets[j].finished = false){
+                      if(separateBets[j].kind==2){
+                          allRewardAmount = pool.sPool * 0.85;
+                      if (separateBets[j].homeScore==homeScore && separateBets[j].visitScore==visitScore){
+                          uint256 singleScorePoolAmount = singleScorePool[separateBets[j].pickingKey];
+                          uint256 rewardAmount = allRewardAmount * separateBets[j].weight /  singleScorePoolAmount;
+                          //reward
+                          address payable joiner_address = payable(separateBets[j].joiner);
+                          joiner_address.transfer(rewardAmount);
+                          separateBets[j].weight.finished = true;
+                          
+                      }
+                    }else{
+                      if(separateBets[j].kind==result){
+                          allRewardAmount = pool.wPool+pool.lPool+pool.dPool * 0.85
+                          uint256 pickPoolAmount = 0;
+                          if (kind == 0){
+                              pickPoolAmount = pool.lPool * 0.85;
+                          }
+                          if (kind == 1){
+                              pickPoolAmount = pool.dPool * 0.85;
+                          }
+                          if (kind == 3){
+                              pickPoolAmount = pool.wPool * 0.85;
+                          }
+                          uint256 rewardAmount = allRewardAmount * separateBets[j].weight /  pickPoolAmount;
+                          //reward
+                          address payable joiner_address = payable(separateBets[j].joiner);
+                          joiner_address.transfer(rewardAmount);
+                          separateBets[j].weight.finished = true;
+                      }
+                    }
+                  }  
+                }
+                address payable owner_address = payable(owner);
+                owner_address.transfer(serviceAmount);
+       }
+       return true
     }
     function getPair(bytes32 poolKey) external view returns (string memory home,string memory visit,string memory rounds,uint256 wPool,uint256 dPool,uint256 lPool,uint256 sPool){
         if(!contains(poolKey)) { 
@@ -134,6 +208,14 @@ contract WCPOOL {
         } else {
             return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
         }
+    }
+    // @notice 修改器
+    modifier onlyManager() { 
+        require(
+            msg.sender == owner,
+            "Only owner can call this."
+        );
+        _;
     }
 }
    

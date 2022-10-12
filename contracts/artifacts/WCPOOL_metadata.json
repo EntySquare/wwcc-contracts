@@ -222,11 +222,11 @@
 	},
 	"sources": {
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0x301238a82bf3d6b72807e67a3158cd6601c5d063028b647b6ad9c344d64baa21",
+			"keccak256": "0x345e8f2ed9f58f4e2788bc64b4d1347150ba720068ec73d0b27565039ce688af",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://9f6e73855cf9cf289b21b0bdb778917e4d96cb832099b6c623764c15bfe1142d",
-				"dweb:/ipfs/QmS5q1U5xbzcg6oVDoLqpotRVBShxawaenZEf3EJFbR1ym"
+				"bzz-raw://896f31920ceabbedee014b9f08251bfd58c6525183e3ed421b22fee161a20e98",
+				"dweb:/ipfs/QmU74KCnLBZ4BDtgXSq7Dp9Bx3Z47VaeqyK6uNz5b92Gfs"
 			]
 		}
 	},
