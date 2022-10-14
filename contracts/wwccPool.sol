@@ -11,6 +11,7 @@ contract WCPOOL {
         uint256 dPool;
         uint256 lPool;
         uint256 sPool;
+        uint256 basal;
         bool decided;
         bool used;
         bool finished;
@@ -41,16 +42,16 @@ contract WCPOOL {
     mapping (address => JoinerAllPicking) joinerAllPicking;
     mapping (address => uint256) voteAmount;
     mapping (bytes32 => WcPool) WcPools;
-    // uint256 nextWDLPoolAmount;
-    // uint256 nextScorePoolAmount;
+    uint256 nextBasalLast;
     event Transfer(address owner,address spender,uint256 value);
     event Approval(address owner,address spender,uint256 value);
     event Received(address, uint);
      /* Initializes contract with initial supply tokens to the creator of the contract */
     constructor(
-        address holder)  public{
+        address holder,uint256 firstBasal)  public{
         // Set the symbol for display purposes
         owner = holder;
+        nextBasalLast = firstBasal;
         // nextWDLPoolAmount = 0;
         // nextScorePoolAmount = 0;
     }
@@ -74,6 +75,7 @@ contract WCPOOL {
            WcPools[poolKey].dPool = 0;
            WcPools[poolKey].lPool = 0;
            WcPools[poolKey].sPool = 0;
+           WcPools[poolKey].basal = 0;
            WcPools[poolKey].decided = decided;
            WcPools[poolKey].finished = false;
 
@@ -111,12 +113,19 @@ contract WCPOOL {
        }
        return true;
     }
-    function Set_Basal(bytes32 poolKey) external onlyManager  returns (bool){
+    function Set_Basal(bytes32 poolKey,uint256 basal) external onlyManager  returns (bool){
         if(!contains(poolKey)) { 
             revert("pool not exist");
         }else{
            WcPool memory pool = WcPools[poolKey];
-           uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool).mul(10).div(100);
+           if (pool.basal > 0){
+               revert("pool basal has been set");
+           }
+           if (nextBasalLast > basal){
+               revert("not enough basal");
+           }
+           pool.basal += basal;
+           nextBasalLast -=  basal;
            return true;
         }
     }
@@ -125,7 +134,7 @@ contract WCPOOL {
                 revert("pool not exist");
            }else{
                 WcPool memory pool = WcPools[poolKey];
-                uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool).mul(10).div(100);
+                uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool + pool.basal).div(10);
                 if (pool.finished = true){
                     address payable toAddress_address = payable(toAddress);
                     toAddress_address.transfer(expect);
@@ -147,19 +156,25 @@ contract WCPOOL {
             revert("pool not exist");
         }else{
            WcPool memory pool = WcPools[poolKey];
-           uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool).mul(10).div(100);
+           uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool + pool.basal).div(10);
            return expect;
         }
+    }
+    function CheckBasal() external onlyManager  returns (uint256){
+           return nextBasalLast;
+        
     }
     function Award(bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 result)  external onlyManager  payable returns(bool){
         if(!contains(poolKey)) { 
             revert("pool not exist");
        }else{
            WcPool memory pool = WcPools[poolKey];
+           if (pool.finished=true){
+               revert("pool has finished");
+           }
            JoinerPicking[] memory separateBets = allScorePoolInfo[poolKey].separateBet;
            uint256 allRewardAmount = 0;
-        //    nextWDLPoolAmount += (pool.wPool+pool.lPool+pool.dPool) * 0.05;
-        //    nextScorePoolAmount += pool.sPool * 0.05;
+           nextBasalLast += (pool.sPool + pool.wPool+pool.lPool+pool.dPool + pool.basal.div(2)).div(20);
         //    uint256 wdls =pool.sPool+pool.wPool+pool.lPool+pool.dPool;
         //    uint256 serviceAmount = wdls.mul(15).div(100);
                 for (
@@ -169,7 +184,7 @@ contract WCPOOL {
                 ){
                   if(separateBets[j].finished = false){
                       if(separateBets[j].kind==2){
-                          allRewardAmount = pool.sPool.mul(85).div(100);
+                          allRewardAmount = (pool.sPool + pool.basal.div(2)).mul(85).div(100);
                       if (separateBets[j].homeScore==homeScore && separateBets[j].visitScore==visitScore){
                           uint256 singleScorePoolAmount = singleScorePool[separateBets[j].pickingKey];
                           uint256 rewardAmount = allRewardAmount * separateBets[j].weight /  singleScorePoolAmount;
@@ -185,7 +200,7 @@ contract WCPOOL {
                       }
                     }else{
                       if(separateBets[j].kind==result){
-                          allRewardAmount = (pool.wPool+pool.lPool+pool.dPool).mul(85).div(100);
+                          allRewardAmount = (pool.wPool+pool.lPool+pool.dPool+ pool.basal.div(2)).mul(85).div(100);
                           uint256 pickPoolAmount = 0;
                           if (separateBets[j].kind == 0){
                               pickPoolAmount = pool.lPool.mul(85).div(100);

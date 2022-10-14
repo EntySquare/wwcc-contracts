@@ -11,6 +11,11 @@
 						"internalType": "address",
 						"name": "holder",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "firstBasal",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -120,6 +125,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "CheckBasal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -188,6 +206,11 @@
 						"internalType": "bytes32",
 						"name": "poolKey",
 						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "basal",
+						"type": "uint256"
 					}
 				],
 				"name": "Set_Basal",
@@ -372,11 +395,11 @@
 			]
 		},
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0x5dfc462320fecf37f072ca42bd3b0041885ac4d7d48acf4561460ee6937ec9ac",
+			"keccak256": "0x714e971b2a20732502c7ba2216adc45a0436194717c0e0fd8cc2842e076ab6aa",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://d0b132a76f24678c173a9cfc379020bc4f41f9d38c02f3e01ed9767645c10aa7",
-				"dweb:/ipfs/QmQjoVEsk5CgjhuE6ZJcrG6A1jhr6w5MN55Bza1BH5Zzqb"
+				"bzz-raw://2cb1e8e355cdda75765630a08b543c00dd29206469bf724b915a5584be27e81e",
+				"dweb:/ipfs/QmTa6d7VHXs6VnD9rC6bcv2ueHKdXu8FynnHUs2VFiKYkm"
 			]
 		}
 	},
