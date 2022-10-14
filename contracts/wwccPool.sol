@@ -3,6 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "./safemath.sol";
 contract WCPOOL {
+   //single Pool struct 
    struct WcPool{
         string home;
         string visit;
@@ -16,6 +17,7 @@ contract WCPOOL {
         bool used;
         bool finished;
     }
+    //pool's base info to show
     struct PoolViewInfo{
         uint256 wPool;
         uint256 dPool;
@@ -23,14 +25,17 @@ contract WCPOOL {
         uint256 sPool;
         uint256 basal;
     }
+    //all score pool struct
     struct AllScorePool{
         JoinerPicking[] separateBet;
         bytes32  poolKey;
     }
+    //all picking info struct
     struct JoinerAllPicking{
         JoinerPicking[] separateBet;
         address  joiner;
     }
+    //single picking struct
     struct JoinerPicking{
         uint256 weight;
         uint256 kind;
@@ -42,24 +47,28 @@ contract WCPOOL {
     }
     using SafeMath for uint256;
     address owner;
-    mapping (string => uint256) scorePools;
-    //mapping (bytes32 => JoinerPicking) allJoinerInfo;
-    mapping (bytes32 => AllScorePool) allScorePoolInfo;
-    mapping (string => uint256) singleScorePool;
-    mapping (address => JoinerAllPicking) joinerAllPicking;
-    mapping (address => uint256) voteAmount;
-    mapping (bytes32 => WcPool) WcPools;
+    // basal last in contract
     uint256 nextBasalLast;
+    //vote tickets for this address
+    mapping (address => uint256) voteAmount;
+    //all pools
+    mapping (bytes32 => WcPool) WcPools;
+    //all score pool info  in single pool
+    mapping (bytes32 => AllScorePool) allScorePoolInfo;
+    //singl score pool info  in single pool
+    mapping (string => uint256) singleScorePool;
+    //all picking info for this joiner
+    mapping (address => JoinerAllPicking) joinerAllPicking;
     event Received(address, uint);
-     /* Initializes contract with initial supply tokens to the creator of the contract */
+     /* Initializes contract with holder and  first basal you want to inject */
     constructor(
         address holder,uint256 firstBasal)  public{
-        // Set the symbol for display purposes
         owner = holder;
         nextBasalLast = firstBasal;
         // nextWDLPoolAmount = 0;
         // nextScorePoolAmount = 0;
     }
+    //manager set pool without basal
     function Set_Pool(
     string memory home,
     string memory visit,
@@ -87,7 +96,8 @@ contract WCPOOL {
        }
        return poolKey;
     }
-    function Picking(address joiner,uint256 weight,bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 kind) external onlyManager returns(bool){
+    //joiner pick
+    function Picking(address joiner,uint256 weight,bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 kind) external returns(bool){
         if(!contains(poolKey)) { 
             revert("pool not exist");
        }else{
@@ -118,6 +128,7 @@ contract WCPOOL {
        }
        return true;
     }
+    //manager set basal in single pool by poolkey
     function Set_Basal(bytes32 poolKey,uint256 basal) external onlyManager  returns (bool){
         if(!contains(poolKey)) { 
             revert("pool not exist");
@@ -134,6 +145,7 @@ contract WCPOOL {
            return true;
         }
     }
+    //manager withdraw pool's benefit
     function Withdrawal(address toAddress,bytes32 poolKey) external onlyManager payable returns (bool){
            if(!contains(poolKey)) { 
                 revert("pool not exist");
@@ -147,7 +159,9 @@ contract WCPOOL {
                     revert("pool has not finished");
                 }               
            }
+           return true;
     }
+    //manager withdraw joiner's vote tickets for joiner
     function voteWithdrawal(address joiner,uint256 amount) external onlyManager payable returns (bool){
         if(voteAmount[joiner] >= amount && voteAmount[joiner] >= 0){
             address payable toAddress_address = payable(joiner);
@@ -155,8 +169,10 @@ contract WCPOOL {
         }else{
             revert("not enough voteAmount");
         }
+        return true;
     }
-    function CheckExpect(bytes32 poolKey) external onlyManager  returns (uint256){
+    //manager check single pool's expect benefit by poolkey
+    function CheckExpect(bytes32 poolKey) external onlyManager view  returns (uint256){
         if(!contains(poolKey)) { 
             revert("pool not exist");
         }else{
@@ -165,10 +181,11 @@ contract WCPOOL {
            return expect;
         }
     }
-    function CheckBasal() external onlyManager  returns (uint256){
+    //manager check single pool's basal last in contract
+    function CheckBasal() external onlyManager view  returns (uint256){
            return nextBasalLast;
-        
     }
+    //result settlement and loop each joiner in this to handle it
     function Award(bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 result)  external onlyManager  payable returns(bool){
         if(!contains(poolKey)) { 
             revert("pool not exist");
@@ -234,12 +251,13 @@ contract WCPOOL {
        }
        return true;
     }
+    //view pool's base info by exact poolkey
     function getPool(bytes32 poolKey) external view returns (string memory vs,string memory rounds,PoolViewInfo memory viewInfo){
         if(!contains(poolKey)) { 
             revert("not exist");
         }else{
             string  memory hv = strConcat(WcPools[poolKey].home," vs ");
-            string  memory vs = strConcat(hv,WcPools[poolKey].visit);
+            vs = strConcat(hv,WcPools[poolKey].visit);
             PoolViewInfo memory vi = PoolViewInfo(WcPools[poolKey].wPool,
             WcPools[poolKey].dPool,
             WcPools[poolKey].lPool,
@@ -250,9 +268,15 @@ contract WCPOOL {
             vi);
         }
     }
+
+
+    //-----internal function------
+    //contains or not
     function contains(bytes32 poolKey) internal view returns (bool) {
             return WcPools[poolKey].used;
     }
+
+    //concat two string
     function strConcat(string memory _a,string memory _b) internal pure returns (string memory){
             bytes memory _ba = bytes(_a);
             bytes memory _bb = bytes(_b);
@@ -263,15 +287,16 @@ contract WCPOOL {
             for(uint i = 0;i < _bb.length;i++) bret[k++] = _bb[i];
             return string(ret);
         }
+    //transfer function
     function addressToString(address a) internal pure returns(string memory){
             return toString(abi.encodePacked(a));
-    }
+    } 
     function uint256ToString(uint256 u) internal pure returns(string memory){
             return toString(abi.encodePacked(u));
     }
     function bytes32ToString(bytes32 b) internal pure returns(string memory){
             return toString(abi.encodePacked(b));
-     }
+    }
     function toString(bytes memory data) internal pure returns(string memory){
             bytes memory alphabet = "0123456789abcdef";
             bytes memory str = new bytes(2 + data.length * 2);
@@ -283,14 +308,15 @@ contract WCPOOL {
             }
             return string(str);
     }
-    function stringCompare(string memory a, string memory b) internal returns(bool){
+    //compare two string
+    function stringCompare(string memory a, string memory b) internal pure returns(bool){
         if (bytes(a).length != bytes(b).length){
             return false;
         } else {
             return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
         }
     }
-    // @notice 修改器
+    // @notice only manager can do in this condition
     modifier onlyManager() { 
         require(
             msg.sender == owner,
@@ -298,6 +324,7 @@ contract WCPOOL {
         );
         _;
     }
+    //receive bnb token and give user vote ticket
     receive() external payable {
          if(msg.sender != owner){
            voteAmount[msg.sender] += msg.value;

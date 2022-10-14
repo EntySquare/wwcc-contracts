@@ -84,7 +84,7 @@
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -103,7 +103,7 @@
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -352,11 +352,11 @@
 			]
 		},
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0xe8390283d11c9d57ccb7ce7a509816649c19610d55c71fa44fe416dcaf8728ef",
+			"keccak256": "0x4292d96c00908ad7e57d94abaeaaaf6287cc67f944619b16bb379748a2b83dbf",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://1065a313455480a054c574e031204ebf7dbebf3813607fc941c01e7995f39232",
-				"dweb:/ipfs/QmY2kmJfoBBhEd79exca8eAqQZ5892Fe1YtyFJKDD5PAjm"
+				"bzz-raw://4fa2125e767db799fc3c1de90591b48968a34ef41c787c39e0da7cd3a242f1c1",
+				"dweb:/ipfs/QmPU2gsvXTpputAUiv1cwHKmUZ4H638bXdauDMgbAPbUE4"
 			]
 		}
 	},
