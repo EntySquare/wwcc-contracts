@@ -185,6 +185,10 @@ contract WCPOOL {
     function CheckBasal() external onlyManager view  returns (uint256){
            return nextBasalLast;
     }
+    //joiner check vote tickets last
+    function CheckVoteTickets() external view returns (uint256){
+        return voteAmount[msg.sender];
+    }
     //result settlement and loop each joiner in this to handle it
     function Award(bytes32 poolKey,uint256 homeScore,uint256 visitScore,uint256 result)  external onlyManager  payable returns(bool){
         if(!contains(poolKey)) { 

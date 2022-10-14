@@ -107,6 +107,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "CheckVoteTickets",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -352,11 +365,11 @@
 			]
 		},
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0x4292d96c00908ad7e57d94abaeaaaf6287cc67f944619b16bb379748a2b83dbf",
+			"keccak256": "0x284be02a8d8fd082c193a7ccdab267b45728084ecf6f2deffef9042569ec175e",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://4fa2125e767db799fc3c1de90591b48968a34ef41c787c39e0da7cd3a242f1c1",
-				"dweb:/ipfs/QmPU2gsvXTpputAUiv1cwHKmUZ4H638bXdauDMgbAPbUE4"
+				"bzz-raw://2de7510016685310385c3c126a7f720049b2e3be142d23d8e96dc6ad5d9bc9da",
+				"dweb:/ipfs/QmWTGFKMmBcqvbuy5mQ2KiLCBEdWwVKaNdfdNLc6yFeVxk"
 			]
 		}
 	},
