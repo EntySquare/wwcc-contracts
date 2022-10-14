@@ -16,6 +16,13 @@ contract WCPOOL {
         bool used;
         bool finished;
     }
+    struct PoolViewInfo{
+        uint256 wPool;
+        uint256 dPool;
+        uint256 lPool;
+        uint256 sPool;
+        uint256 basal;
+    }
     struct AllScorePool{
         JoinerPicking[] separateBet;
         bytes32  poolKey;
@@ -43,8 +50,6 @@ contract WCPOOL {
     mapping (address => uint256) voteAmount;
     mapping (bytes32 => WcPool) WcPools;
     uint256 nextBasalLast;
-    event Transfer(address owner,address spender,uint256 value);
-    event Approval(address owner,address spender,uint256 value);
     event Received(address, uint);
      /* Initializes contract with initial supply tokens to the creator of the contract */
     constructor(
@@ -229,17 +234,20 @@ contract WCPOOL {
        }
        return true;
     }
-    function getPair(bytes32 poolKey) external view returns (string memory home,string memory visit,string memory rounds,uint256 wPool,uint256 dPool,uint256 lPool,uint256 sPool){
+    function getPool(bytes32 poolKey) external view returns (string memory vs,string memory rounds,PoolViewInfo memory viewInfo){
         if(!contains(poolKey)) { 
             revert("not exist");
         }else{
-            return (WcPools[poolKey].home,
-            WcPools[poolKey].visit,
-            WcPools[poolKey].rounds,
-            WcPools[poolKey].wPool,
+            string  memory hv = strConcat(WcPools[poolKey].home," vs ");
+            string  memory vs = strConcat(hv,WcPools[poolKey].visit);
+            PoolViewInfo memory vi = PoolViewInfo(WcPools[poolKey].wPool,
             WcPools[poolKey].dPool,
             WcPools[poolKey].lPool,
-            WcPools[poolKey].sPool);
+            WcPools[poolKey].sPool,
+            WcPools[poolKey].basal);
+            return (vs,
+            WcPools[poolKey].rounds,
+            vi);
         }
     }
     function contains(bytes32 poolKey) internal view returns (bool) {

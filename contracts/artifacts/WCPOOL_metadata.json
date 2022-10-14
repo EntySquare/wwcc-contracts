@@ -27,31 +27,6 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "spender",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					}
-				],
-				"name": "Approval",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
 						"name": "",
 						"type": "address"
 					},
@@ -63,31 +38,6 @@
 					}
 				],
 				"name": "Received",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "spender",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					}
-				],
-				"name": "Transfer",
 				"type": "event"
 			},
 			{
@@ -290,16 +240,11 @@
 						"type": "bytes32"
 					}
 				],
-				"name": "getPair",
+				"name": "getPool",
 				"outputs": [
 					{
 						"internalType": "string",
-						"name": "home",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "visit",
+						"name": "vs",
 						"type": "string"
 					},
 					{
@@ -308,24 +253,36 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "wPool",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "dPool",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "lPool",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "sPool",
-						"type": "uint256"
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "wPool",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "dPool",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lPool",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "sPool",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "basal",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct WCPOOL.PoolViewInfo",
+						"name": "viewInfo",
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -395,11 +352,11 @@
 			]
 		},
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0x714e971b2a20732502c7ba2216adc45a0436194717c0e0fd8cc2842e076ab6aa",
+			"keccak256": "0xe8390283d11c9d57ccb7ce7a509816649c19610d55c71fa44fe416dcaf8728ef",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://2cb1e8e355cdda75765630a08b543c00dd29206469bf724b915a5584be27e81e",
-				"dweb:/ipfs/QmTa6d7VHXs6VnD9rC6bcv2ueHKdXu8FynnHUs2VFiKYkm"
+				"bzz-raw://1065a313455480a054c574e031204ebf7dbebf3813607fc941c01e7995f39232",
+				"dweb:/ipfs/QmY2kmJfoBBhEd79exca8eAqQZ5892Fe1YtyFJKDD5PAjm"
 			]
 		}
 	},
