@@ -166,30 +166,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "poolKey",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "basal",
-						"type": "uint256"
-					}
-				],
-				"name": "Set_Basal",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "string",
 						"name": "home",
 						"type": "string"
@@ -243,6 +219,32 @@
 					}
 				],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllPoolKeys",
+				"outputs": [
+					{
+						"internalType": "bytes32[]",
+						"name": "",
+						"type": "bytes32[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getLastBNB",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -326,6 +328,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "toAddress",
+						"type": "address"
+					}
+				],
+				"name": "withdrawBNBInContract",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -365,11 +386,11 @@
 			]
 		},
 		"wwcc-contracts/contracts/wwccPool.sol": {
-			"keccak256": "0x284be02a8d8fd082c193a7ccdab267b45728084ecf6f2deffef9042569ec175e",
+			"keccak256": "0xd82e381f2c62cd211a625f8cd153c7da971d249ecde35806a8c8f09cbd1795df",
 			"license": "SimPL-2.0",
 			"urls": [
-				"bzz-raw://2de7510016685310385c3c126a7f720049b2e3be142d23d8e96dc6ad5d9bc9da",
-				"dweb:/ipfs/QmWTGFKMmBcqvbuy5mQ2KiLCBEdWwVKaNdfdNLc6yFeVxk"
+				"bzz-raw://df67a747a9bc8f08a8f1c2e6489bca2c97c102ae3afede3e7eef824780d0f06f",
+				"dweb:/ipfs/QmR37Qs9W27uE71AazXLq6ejhvV6FZNBwu9bzsnzSXNK8n"
 			]
 		}
 	},

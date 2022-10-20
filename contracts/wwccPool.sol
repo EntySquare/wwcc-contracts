@@ -45,10 +45,13 @@ contract WCPOOL {
         string  pickingKey;
         bool finished;
     }
+    
     using SafeMath for uint256;
     address owner;
     // basal last in contract
     uint256 nextBasalLast;
+    bytes32[] poolKeys;
+    uint256 lastBNB;
     //vote tickets for this address
     mapping (address => uint256) voteAmount;
     //all pools
@@ -64,6 +67,7 @@ contract WCPOOL {
     constructor(
         address holder,uint256 firstBasal)  public{
         owner = holder;
+        lastBNB = 0;
         nextBasalLast = firstBasal;
         // nextWDLPoolAmount = 0;
         // nextScorePoolAmount = 0;
@@ -77,7 +81,14 @@ contract WCPOOL {
     ) external onlyManager returns (bytes32) {
        string memory s1 = strConcat(home,visit);
        string memory s2 = strConcat(s1,rounds);
-       bytes32 poolKey = keccak256(abi.encodePacked(s2));
+       string memory decidedStr;
+       if (decided == true){
+           decidedStr = "true";
+       }else{
+           decidedStr = "false";
+       }
+       string memory s3 = strConcat(s2,decidedStr);
+       bytes32 poolKey = keccak256(abi.encodePacked(s3));
        if(contains(poolKey)) { 
             revert("pair exist");
        }else{
@@ -94,6 +105,7 @@ contract WCPOOL {
            WcPools[poolKey].finished = false;
 
        }
+       poolKeys.push(poolKey);
        return poolKey;
     }
     //joiner pick
@@ -105,13 +117,25 @@ contract WCPOOL {
                revert("not enough voteAmount");
            }
            WcPool memory pool = WcPools[poolKey];
-           string  memory si = strConcat(uint256ToString(homeScore),uint256ToString(visitScore));
-           string  memory pickingKey = strConcat(bytes32ToString(poolKey),si);
-           JoinerPicking memory jp = JoinerPicking(weight,kind,homeScore,visitScore,joiner,pickingKey,false);
+           string  memory pickingKey;
+           string memory s1 = strConcat(strConcat(pool.home,pool.visit),pool.rounds);
+           if (pool.decided == true){
+            pickingKey = strConcat(strConcat(s1,"true"),strConcat(uint256ToString(homeScore),uint256ToString(visitScore)));
+           }else{
+            pickingKey = strConcat(strConcat(s1,"false"),strConcat(uint256ToString(homeScore),uint256ToString(visitScore)));
+           }
+           JoinerPicking memory jp;
+           jp.weight = weight;
+           jp.kind = kind;
+           jp.homeScore = homeScore;
+           jp.visitScore = visitScore;
+           jp.joiner = joiner;
+           jp.pickingKey = pickingKey;
+           jp.finished = false;
            allScorePoolInfo[poolKey].poolKey = poolKey;
            allScorePoolInfo[poolKey].separateBet.push(jp); 
            joinerAllPicking[joiner].joiner = joiner;
-           allScorePoolInfo[poolKey].separateBet.push(jp); 
+           joinerAllPicking[joiner].separateBet.push(jp); 
             if (kind == 2){
               pool.sPool += weight;
               singleScorePool[pickingKey] += weight;
@@ -127,23 +151,6 @@ contract WCPOOL {
            
        }
        return true;
-    }
-    //manager set basal in single pool by poolkey
-    function Set_Basal(bytes32 poolKey,uint256 basal) external onlyManager  returns (bool){
-        if(!contains(poolKey)) { 
-            revert("pool not exist");
-        }else{
-           WcPool memory pool = WcPools[poolKey];
-           if (pool.basal > 0){
-               revert("pool basal has been set");
-           }
-           if (nextBasalLast > basal){
-               revert("not enough basal");
-           }
-           pool.basal += basal;
-           nextBasalLast -=  basal;
-           return true;
-        }
     }
     //manager withdraw pool's benefit
     function Withdrawal(address toAddress,bytes32 poolKey) external onlyManager payable returns (bool){
@@ -165,7 +172,7 @@ contract WCPOOL {
     function voteWithdrawal(address joiner,uint256 amount) external onlyManager payable returns (bool){
         if(voteAmount[joiner] >= amount && voteAmount[joiner] >= 0){
             address payable toAddress_address = payable(joiner);
-            toAddress_address.transfer(voteAmount[joiner]);
+            toAddress_address.transfer(voteAmount[joiner].mul(10000000000000000));
         }else{
             revert("not enough voteAmount");
         }
@@ -177,9 +184,15 @@ contract WCPOOL {
             revert("pool not exist");
         }else{
            WcPool memory pool = WcPools[poolKey];
-           uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool + pool.basal).div(10);
+           uint256 expect = (pool.wPool+pool.lPool+pool.dPool+pool.sPool + pool.basal).mul(1000000000000000);
            return expect;
         }
+    }
+    function getAllPoolKeys() external view returns (bytes32[] memory){
+        return poolKeys;
+    }
+    function getLastBNB() external onlyManager view returns (uint256){
+        return lastBNB;
     }
     //manager check single pool's basal last in contract
     function CheckBasal() external onlyManager view  returns (uint256){
@@ -255,6 +268,11 @@ contract WCPOOL {
        }
        return true;
     }
+    function withdrawBNBInContract(address toAddress)external onlyManager payable returns(bool){
+            address payable toAddress_address = payable(toAddress);
+            toAddress_address.transfer(lastBNB - 1);
+            return true;
+    }
     //view pool's base info by exact poolkey
     function getPool(bytes32 poolKey) external view returns (string memory vs,string memory rounds,PoolViewInfo memory viewInfo){
         if(!contains(poolKey)) { 
@@ -296,7 +314,12 @@ contract WCPOOL {
             return toString(abi.encodePacked(a));
     } 
     function uint256ToString(uint256 u) internal pure returns(string memory){
-            return toString(abi.encodePacked(u));
+            bytes memory alphabet = "0123456789abcdef";
+            bytes memory data = abi.encodePacked(u);
+            bytes memory str = new bytes(1);
+            uint i = data.length - 1;
+            str[0] = alphabet[uint(uint8(data[i] & 0x0f))];
+            return string(str);
     }
     function bytes32ToString(bytes32 b) internal pure returns(string memory){
             return toString(abi.encodePacked(b));
@@ -331,7 +354,8 @@ contract WCPOOL {
     //receive bnb token and give user vote ticket
     receive() external payable {
          if(msg.sender != owner){
-           voteAmount[msg.sender] += msg.value;
+           voteAmount[msg.sender] += msg.value.div(10000000000000000);
+           lastBNB += msg.value;
            emit Received(msg.sender, msg.value);
          }else{
 
