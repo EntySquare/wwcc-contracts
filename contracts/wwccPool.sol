@@ -85,7 +85,7 @@ contract WCPOOL {
        if (decided == true){
            decidedStr = "true";
        }else{
-           decidedStr = "false";
+           decidedStr = "false"; 
        }
        string memory s3 = strConcat(s2,decidedStr);
        bytes32 poolKey = keccak256(abi.encodePacked(s3));
